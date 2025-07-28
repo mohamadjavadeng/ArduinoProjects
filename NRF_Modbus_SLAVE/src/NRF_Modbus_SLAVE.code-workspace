@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"name": "NRF_Modbus_SLAVE",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"unordered_map": "cpp",
+			"initializer_list": "cpp",
+			"array": "cpp",
+			"string": "cpp",
+			"vector": "cpp",
+			"random": "cpp",
+			"ranges": "cpp",
+			"span": "cpp"
+		}
+	}
+}

@@ -1,0 +1,71 @@
+#include <Arduino.h>
+#include <RF24.h>
+// put function declarations here:
+#define dePin D1
+
+void transmitLevel(void){
+  digitalWrite(dePin, HIGH);
+}
+
+
+void recieveLevel(void){
+  digitalWrite(dePin, LOW);
+}
+
+
+RF24 radio(D8,D4);
+
+const byte address[][6] = {"00001", "00002"};
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  // Serial.println("Program started");
+  pinMode(LED_BUILTIN, OUTPUT);
+
+  pinMode(dePin, OUTPUT);
+
+  radio.begin();
+  if(radio.isChipConnected()){
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+  else{
+    digitalWrite(LED_BUILTIN, HIGH);
+  }
+  radio.setDataRate(RF24_1MBPS);
+  radio.setPALevel(RF24_PA_MIN);
+  radio.enableDynamicPayloads();
+  
+  radio.openWritingPipe(address[0]);
+  radio.openReadingPipe(4, address[1]);
+  radio.startListening();
+  radio.printPrettyDetails();
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  if (radio.available()) {
+    uint8_t len = radio.getDynamicPayloadSize();
+    // Serial.println("Length: " + String(len));
+    uint8_t buffer[32] = {0};
+    radio.read(&buffer, len);
+    // Serial.print("Received: ");
+    Serial.write(buffer, len);
+    delay(10);
+    /*radio.stopListening();
+    char txBuff[] = "Data recieved";
+    bool sent = radio.write(&txBuff, sizeof(txBuff));
+    if (!sent) {
+      Serial.println("Send response failed!");
+    } else {
+      Serial.print("Sent response");
+    }
+    Serial.println();
+    delay(10);
+    radio.startListening();*/
+  }
+  // radio.startListening();
+}
+
+// put function definitions here:
